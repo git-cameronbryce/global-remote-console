@@ -1,6 +1,5 @@
-import { ButtonInteraction, SlashCommandBuilder } from 'discord.js';
 import { SlashCommandProps, CommandOptions, ButtonKit } from 'commandkit';
-import { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
+import { ButtonInteraction, SlashCommandBuilder, EmbedBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
 
 export const data = new SlashCommandBuilder()
   .setName('asa-setup-framework')
