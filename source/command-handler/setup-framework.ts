@@ -1,5 +1,5 @@
-import { SlashCommandBuilder } from 'discord.js';
-import type { SlashCommandProps, CommandOptions } from 'commandkit';
+import { ButtonInteraction, SlashCommandBuilder } from 'discord.js';
+import { SlashCommandProps, CommandOptions, ButtonKit } from 'commandkit';
 import { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
 
 export const data = new SlashCommandBuilder()
@@ -9,26 +9,37 @@ export const data = new SlashCommandBuilder()
 export async function run({ interaction }: SlashCommandProps) {
   await interaction.deferReply({ ephemeral: false });
 
-  const installation: ButtonBuilder = new ButtonBuilder()
+  const installation = new ButtonKit()
     .setCustomId('asa-setup-framework')
     .setLabel('Continue Installation')
     .setStyle(ButtonStyle.Success);
 
-  const donation: ButtonBuilder = new ButtonBuilder()
+  const donation = new ButtonKit()
     .setURL('https://example.com/')
     .setLabel('Donation')
     .setStyle(ButtonStyle.Link)
 
-  const row: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>()
+  const row = new ActionRowBuilder<ButtonKit>()
     .addComponents(installation, donation);
 
   const embed: EmbedBuilder = new EmbedBuilder()
     .setDescription('**Ark Survival Ascended**\n**Account Setup & Overview**\nThis app was designed to integrate into any external hosting provider remotely, without overcomplexity.\n\n**Additional Information**\nWe balance stability then features, in that order. Donations received will be towards funding ongoing development and staff.')
-    .setFooter({ text: 'Note: Contact support if issues persist.', iconURL: 'https://i.imgur.com/6OWyTsr.png' })
+    .setFooter({ text: 'Note: Contact support if issues persist.' })
     .setImage('https://i.imgur.com/bFyqkUS.png')
     .setColor(0x2ecc71);
 
-  await interaction.followUp({ embeds: [embed], components: [row] });
+  const message = await interaction.followUp({ embeds: [embed], components: [row] });
+
+  installation.onClick(
+    (interaction: ButtonInteraction) => {
+      interaction.reply('Button clicked!');
+    }, { message }
+  )
+    .onEnd(() => {
+      console.log('Button collector ended.')
+      installation.setDisabled(true);
+      message.edit({ components: [row] })
+    })
 }
 
 export const options: CommandOptions = {
