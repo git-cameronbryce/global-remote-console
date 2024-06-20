@@ -1,5 +1,6 @@
+import { ButtonInteraction, SlashCommandBuilder, EmbedBuilder, ButtonStyle, ActionRowBuilder, ChannelType, CategoryChannel } from 'discord.js';
 import { SlashCommandProps, CommandOptions, ButtonKit } from 'commandkit';
-import { ButtonInteraction, SlashCommandBuilder, EmbedBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
+import { supabase } from '../script'
 
 export const data = new SlashCommandBuilder()
   .setName('asa-setup-framework')
@@ -7,6 +8,16 @@ export const data = new SlashCommandBuilder()
 
 export async function run({ interaction }: SlashCommandProps) {
   await interaction.deferReply({ ephemeral: false });
+
+  interface InputProps {
+    guild: string;
+    user: string;
+  };
+
+  const input: InputProps = {
+    guild: interaction.guild!.id,
+    user: interaction.user!.id
+  };
 
   const installation = new ButtonKit()
     .setCustomId('asa-setup-framework')
@@ -30,8 +41,38 @@ export async function run({ interaction }: SlashCommandProps) {
   const message = await interaction.followUp({ embeds: [embed], components: [row] });
 
   installation.onClick(
-    (interaction: ButtonInteraction) => {
+    async (interaction: ButtonInteraction) => {
       interaction.reply('Button clicked!');
+
+      const connection: CategoryChannel = await interaction.guild!.channels.create({
+        name: `ARC: Connection Status`,
+        type: ChannelType.GuildCategory
+      });
+
+      await interaction.guild!.channels.create({
+        name: '𝗖onnection-𝗦tatus',
+        type: ChannelType.GuildText,
+        parent: connection
+      });
+
+      const server: CategoryChannel = await interaction.guild!.channels.create({
+        name: `ARC: Server Status`,
+        type: ChannelType.GuildCategory
+      });
+
+      await interaction.guild!.channels.create({
+        name: '𝗦erver-𝗦tatus',
+        type: ChannelType.GuildText,
+        parent: server
+      });
+
+      const { error, data } = await supabase
+        .from('asa-configuration')
+        .insert([{ guild: interaction.guild!.id, connection: { id: connection.id }, server: { id: server.id } }])
+        .select();
+
+      if (error) console.log(error)
+      console.log(data)
     }, { message }
   )
     .onEnd(() => {
@@ -44,3 +85,9 @@ export async function run({ interaction }: SlashCommandProps) {
 export const options: CommandOptions = {
   userPermissions: ['Administrator'],
 };
+
+
+/*
+[:guild] [:username] [:]
+
+*/
