@@ -9,9 +9,9 @@ const client: Client = new Client({
 
 new CommandKit({
   client,
-  // commandsPath: path.join(__dirname, 'command-handler'),
+  commandsPath: path.join(__dirname, 'command-handler'),
   // eventsPath: path.join(__dirname, 'event-handler'),
-  devGuildIds: ['1219480518131716126'],
+  devGuildIds: ['1253089110026096752'],
   bulkRegister: true
 });
 
