@@ -1,6 +1,6 @@
 import { ButtonInteraction, SlashCommandBuilder, EmbedBuilder, ButtonStyle, ActionRowBuilder, ChannelType, CategoryChannel, TextChannel } from 'discord.js';
 import { SlashCommandProps, CommandOptions, ButtonKit } from 'commandkit';
-import { supabase } from '../script'
+import { supabase } from '../script';
 
 export const data = new SlashCommandBuilder()
   .setName('asa-setup-framework')
@@ -17,7 +17,7 @@ export async function run({ interaction }: SlashCommandProps) {
   const donation = new ButtonKit()
     .setURL('https://example.com/')
     .setLabel('Donation')
-    .setStyle(ButtonStyle.Link)
+    .setStyle(ButtonStyle.Link);
 
   const row = new ActionRowBuilder<ButtonKit>()
     .addComponents(installation, donation);
@@ -53,7 +53,7 @@ export async function run({ interaction }: SlashCommandProps) {
       const donation = new ButtonKit()
         .setURL('https://example.com/')
         .setLabel('Support')
-        .setStyle(ButtonStyle.Link)
+        .setStyle(ButtonStyle.Link);
 
       const row = new ActionRowBuilder<ButtonKit>()
         .addComponents(connection, donation);
@@ -75,15 +75,15 @@ export async function run({ interaction }: SlashCommandProps) {
           }])
         .select();
 
-      if (error) console.log(error)
-      console.log(data)
+      if (error) console.log(error);
+      console.log(data);
     }, { message }
   )
     .onEnd(() => {
-      console.log('Button collector ended.')
+      console.log('Button collector ended.');
       installation.setDisabled(true);
-      message.edit({ components: [row] })
-    })
+      message.edit({ components: [row] });
+    });
 }
 
 export const options: CommandOptions = {
